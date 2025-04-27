@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TRY-CAP</title>
+  <style>
+    /* Custom Cursor */
+    .cursor {
+      position: fixed;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: rgba(120, 134, 146, 0.5);
+      box-shadow: 0 0 10px rgba(120, 134, 146, 0.8);
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 9999;
+      mix-blend-mode: screen;
+      transition: transform 0.15s ease, background 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .cursor-inner {
+      position: fixed;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: white;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 9999;
+      transition: width 0.2s ease, height 0.2s ease;
+    }
+    
+    /* Cursor states */
+    .cursor.hover {
+      transform: translate(-50%, -50%) scale(1.5);
+      background: rgba(74, 144, 226, 0.5);
+      box-shadow: 0 0 15px rgba(74, 144, 226, 0.8);
+    }
+    
+    .cursor.click {
+      transform: translate(-50%, -50%) scale(0.8);
+      background: rgba(231, 76, 60, 0.5);
+      box-shadow: 0 0 20px rgba(231, 76, 60, 0.8);
+    }
+    
+    .cursor.hover .cursor-inner,
+    .cursor.click .cursor-inner {
+      width: 4px;
+      height: 4px;
+    }
+    
+    /* Make sure cursor doesn't interfere with text selection */
+    * {
+      cursor: none !important;
+    }
+
+    /* Loading Overlay */
+    .page-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #000000;
+      z-index: 1000;
+      animation: fadeOut 0.9s ease-out forwards;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    @keyframes fadeOut {
+      0% { opacity: 1; }
+      70% { opacity: 0.5; }
+      100% { opacity: 0; visibility: hidden; }
+    }
+    
+    /* Body Animation */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #000000;
+      color: white;
+      opacity: 0;
+      animation: fadeInBody 0.5s ease-out forwards;
+      animation-delay: 0.5s;
+      overflow-x: hidden;
+    }
+    
+    @keyframes fadeInBody {
+      to { opacity: 1; }
+    }
+
+    nav {
+      position: fixed;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 40px);
+      max-width: 1000px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 20px;
+      background: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+      backdrop-filter: blur(12px);
+      border-radius: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      z-index: 10;
+      color: white;
+      opacity: 0;
+      animation: slideDownFadeIn 0.8s ease-out forwards;
+      animation-delay: 1.0s;
+    }
+    
+    /* Navbar glow effect */
+    nav {
+      box-shadow: 0 0 15px rgba(120, 134, 146, 0.5), 
+                  0 8px 32px rgba(31, 38, 135, 0.37);
+      transition: box-shadow 0.3s ease;
+    }
+    
+    nav:hover {
+      box-shadow: 0 0 25px rgba(120, 134, 146, 0.8), 
+                  0 8px 32px rgba(31, 38, 135, 0.5);
+    }
+    
+    @keyframes slideDownFadeIn {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+    }
+
+    nav .logo {
+      font-size: 1.2rem;
+      font-weight: bold;
+      white-space: nowrap;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+      transition: text-shadow 0.3s ease;
+    }
+
+    nav .logo:hover {
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 15px;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav ul li {
+      cursor: pointer;
+      transition: color 0.3s;
+      font-size: 0.9rem;
+    }
+
+    nav ul li a {
+      color: inherit;
+      text-decoration: none;
+      display: block;
+      padding: 5px 10px;
+      transition: all 0.3s ease;
+      border-radius: 8px;
+    }
+
+    nav ul li:hover a {
+      color: #788692;
+      background: rgba(164, 212, 255, 0.1);
+      text-shadow: 0 0 8px rgba(120, 134, 146, 0.8);
+    }
+
+    /* Modern Hamburger Menu */
+    .hamburger {
+      display: none;
+      cursor: pointer;
+      width: 24px;
+      height: 21px;
+      position: relative;
+      z-index: 11;
+      background: transparent;
+      border: none;
+    }
+
+    .hamburger span {
+      display: block;
+      position: absolute;
+      height: 3px;
+      width: 100%;
+      background: white;
+      border-radius: 3px;
+      opacity: 1;
+      left: 0;
+      transform: rotate(0deg);
+      transition: .25s ease-in-out;
+      box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+    }
+
+    .hamburger:hover span {
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+    }
+
+    .hamburger span:nth-child(1) {
+      top: 0;
+    }
+
+    .hamburger span:nth-child(2),
+    .hamburger span:nth-child(3) {
+      top: 9px;
+    }
+
+    .hamburger span:nth-child(4) {
+      top: 18px;
+    }
+
+    .hamburger.active span:nth-child(1) {
+      top: 9px;
+      width: 0%;
+      left: 50%;
+    }
+
+    .hamburger.active span:nth-child(2) {
+      transform: rotate(45deg);
+    }
+
+    .hamburger.active span:nth-child(3) {
+      transform: rotate(-45deg);
+    }
+
+    .hamburger.active span:nth-child(4) {
+      top: 9px;
+      width: 0%;
+      left: 50%;
+    }
+
+    /* Mobile Menu Styles */
+    @media (max-width: 768px) {
+      .hamburger {
+        display: block;
+      }
+
+      nav ul {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 70%;
+        height: 100vh;
+        background: rgba(20, 20, 20, 0.95);
+        backdrop-filter: blur(15px);
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 30px;
+        transition: right 0.5s ease;
+        z-index: 10;
+        padding: 20px;
+        border-left: 1px solid rgba(255, 255, 255, 0.1);
+        margin: 0;
+        box-shadow: -5px 0 15px rgba(120, 134, 146, 0.3);
+      }
+
+      nav ul.active {
+        right: 0;
+        box-shadow: -5px 0 25px rgba(120, 134, 146, 0.5);
+      }
+
+      nav ul li {
+        width: 100%;
+        text-align: center;
+      }
+
+      nav ul li a {
+        padding: 15px;
+        font-size: 1.1rem;
+        width: 100%;
+      }
+
+      nav ul li:hover a {
+        background: rgba(60, 68, 75, 0.479);
+        box-shadow: 0 0 15px rgba(120, 134, 146, 0.5);
+      }
+
+      nav .logo {
+        font-size: 1rem;
+      }
+    }
+
+    /* Page Content */
+    .content {
+      padding: 100px 20px 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+      text-align: center;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease-out forwards;
+      animation-delay: 1.8s;
+    }
+    
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      text-shadow: 0 0 10px rgba(120, 134, 146, 0.5);
+      transition: all 0.3s ease;
+    }
+
+    h1:hover {
+      text-shadow: 0 0 20px rgba(120, 134, 146, 0.8);
+    }
+
+    /* Image Upload and Preview Styles */
+    .upload-container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(120, 134, 146, 0.3), 
+                  0 8px 32px rgba(31, 38, 135, 0.37);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      transition: all 0.3s ease;
+    }
+    
+    .upload-container:hover {
+      box-shadow: 0 0 25px rgba(120, 134, 146, 0.6), 
+                  0 8px 32px rgba(31, 38, 135, 0.5);
+      transform: translateY(-5px);
+    }
+
+    .image-preview {
+      width: 100%;
+      max-width: 500px;
+      height: 300px;
+      margin: 20px auto;
+      border: 2px dashed rgba(255, 255, 255, 0.3);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      box-shadow: inset 0 0 10px rgba(120, 134, 146, 0.2);
+    }
+    
+    .image-preview:hover {
+      border-color: rgba(255, 255, 255, 0.5);
+      box-shadow: inset 0 0 15px rgba(120, 134, 146, 0.4);
+    }
+
+    .image-preview img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    .upload-btn {
+      background: #4a90e2;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 10px rgba(74, 144, 226, 0.3);
+    }
+
+    .upload-btn:hover {
+      background: #357abd;
+      transform: translateY(-2px);
+      box-shadow: 0 0 15px rgba(74, 144, 226, 0.6);
+    }
+
+    .reset-btn {
+      background: #e74c3c;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      margin-left: 10px;
+      box-shadow: 0 0 10px rgba(231, 76, 60, 0.3);
+    }
+
+    .reset-btn:hover {
+      background: #c0392b;
+      transform: translateY(-2px);
+      box-shadow: 0 0 15px rgba(231, 76, 60, 0.6);
+    }
+
+    .caption-box {
+  width: 100%;
+  max-width: 500px;
+  margin: 20px auto;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: white;
+  font-size: 1rem;
+  resize: vertical;
+  min-height: 100px;
+  transition: all 0.3s ease;
+  box-shadow: inset 0 0 10px rgba(120, 134, 146, 0.2);
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .caption-box {
+    max-width: 90%;
+    font-size: 0.9rem;
+    min-height: 80px;
+  }
+}
+
+    .caption-box:focus {
+      outline: none;
+      border-color: #4a90e2;
+      box-shadow: inset 0 0 15px rgba(74, 144, 226, 0.3),
+                  0 0 10px rgba(74, 144, 226, 0.2);
+    }
+
+    .button-container {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    /* Loader Styles */
+    .loader-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+      backdrop-filter: blur(5px);
+    }
+
+    .loader-container.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Terminal Loader Animation */
+    @keyframes blinkCursor {
+      50% {
+        border-right-color: transparent;
+      }
+    }
+
+    @keyframes typeAndDelete {
+      0%,
+      10% {
+        width: 0;
+      }
+      45%,
+      55% {
+        width: 6.2em;
+      }
+      90%,
+      100% {
+        width: 0;
+      }
+    }
+
+    .terminal-loader {
+      border: 0.1em solid #333;
+      background-color: #1a1a1a;
+      color: #0f0;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 1em;
+      padding: 1.5em 1em;
+      width: 12em;
+      box-shadow: 0 0 20px rgba(0, 255, 0, 0.4);
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+      box-sizing: border-box;
+      transition: all 0.3s ease;
+    }
+    
+    .terminal-loader:hover {
+      box-shadow: 0 0 30px rgba(0, 255, 0, 0.7);
+    }
+
+    .terminal-header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1.5em;
+      background-color: #333;
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px;
+      padding: 0 0.4em;
+      box-sizing: border-box;
+    }
+
+    .terminal-controls {
+      float: right;
+    }
+
+    .control {
+      display: inline-block;
+      width: 0.6em;
+      height: 0.6em;
+      margin-left: 0.4em;
+      border-radius: 50%;
+      background-color: #777;
+      transition: all 0.3s ease;
+    }
+    
+    .control:hover {
+      transform: scale(1.2);
+    }
+
+    .control.close {
+      background-color: #e33;
+      box-shadow: 0 0 5px rgba(238, 51, 51, 0.5);
+    }
+    
+    .control.close:hover {
+      box-shadow: 0 0 10px rgba(238, 51, 51, 0.8);
+    }
+
+    .control.minimize {
+      background-color: #ee0;
+      box-shadow: 0 0 5px rgba(238, 238, 0, 0.5);
+    }
+    
+    .control.minimize:hover {
+      box-shadow: 0 0 10px rgba(238, 238, 0, 0.8);
+    }
+
+    .control.maximize {
+      background-color: #0b0;
+      box-shadow: 0 0 5px rgba(0, 187, 0, 0.5);
+    }
+    
+    .control.maximize:hover {
+      box-shadow: 0 0 10px rgba(0, 187, 0, 0.8);
+    }
+
+    .terminal-title {
+      float: left;
+      line-height: 1.5em;
+      color: #eee;
+      text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+    }
+
+    .text {
+      display: inline-block;
+      white-space: nowrap;
+      overflow: hidden;
+      border-right: 0.2em solid green;
+      animation:
+        typeAndDelete 4s steps(11) infinite,
+        blinkCursor 0.5s step-end infinite alternate;
+      margin-top: 1.5em;
+      text-shadow: 0 0 10px rgba(0, 255, 0, 0.7);
+    }
+  </style>
+</head>
+<body>
+  <!-- Custom Cursor -->
+  <div class="cursor"></div>
+  <div class="cursor-inner"></div>
+
+  <!-- Loading Overlay -->
+  <div class="page-overlay"></div>
+
+  <!-- Navbar -->
+  <nav>
+    <div class="logo">𝙄𝙈𝘼𝙂𝙀 𝘾𝘼𝙋𝙏𝙄𝙊𝙉𝙄𝙉𝙂</div>
+    <button class="hamburger" id="hamburgerBtn">
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <ul id="navMenu">
+      <li><a href="home.html">HOME</a></li>
+      <li><a href="about.html">ABOUT US</a></li>
+      <li><a href="contact.html">CONTACT</a></li>
+    </ul>
+  </nav>
+
+  <!-- Loader -->
+  <div class="loader-container" id="loader">
+    <div class="terminal-loader">
+      <div class="terminal-header">
+        <div class="terminal-title">Status</div>
+        <div class="terminal-controls">
+          <div class="control close"></div>
+          <div class="control minimize"></div>
+          <div class="control maximize"></div>
+        </div>
+      </div>
+      <div class="text">Loading Caption...</div>
+    </div>
+  </div>
+
+  <!-- Page Content -->
+  <div class="content">
+    <br>
+    <br>
+    <br>
+    <div class="upload-container">
+      <input type="file" id="imageUpload" accept="image/*" style="display: none;">
+      <button class="upload-btn" onclick="document.getElementById('imageUpload').click()">Upload Image</button>
+      <div class="image-preview" id="imagePreview">
+        <p>No image selected</p>
+      </div>
+      <textarea class="caption-box" id="captionBox" placeholder="Generated Caption will appear here..." readonly></textarea>
+      <div class="button-container">
+        <button class="upload-btn" onclick="generateCaption()">Generate Caption</button>
+        <button class="reset-btn" onclick="resetAll()">Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script -->
+  <script>
+    // Custom cursor
+    const cursor = document.querySelector('.cursor');
+    const cursorInner = document.querySelector('.cursor-inner');
+    const hoverElements = document.querySelectorAll('a, button, input, textarea, [hover-effect]');
+    
+    document.addEventListener('mousemove', (e) => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+      cursorInner.style.left = e.clientX + 'px';
+      cursorInner.style.top = e.clientY + 'px';
+    });
+    
+    // Hover effects
+    hoverElements.forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursor.classList.add('hover');
+      });
+      el.addEventListener('mouseleave', () => {
+        cursor.classList.remove('hover');
+      });
+    });
+    
+    // Click effect
+    document.addEventListener('mousedown', () => {
+      cursor.classList.add('click');
+    });
+    
+    document.addEventListener('mouseup', () => {
+      cursor.classList.remove('click');
+    });
+
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const navMenu = document.getElementById('navMenu');
+
+    hamburgerBtn.addEventListener('click', () => {
+      hamburgerBtn.classList.toggle('active');
+      navMenu.classList.toggle('active');
+      
+      // Prevent scrolling when menu is open
+      if(navMenu.classList.contains('active')) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = '';
+      }
+    });
+
+    const navItems = navMenu.querySelectorAll('li');
+    navItems.forEach(item => {
+      item.addEventListener('click', () => {
+        hamburgerBtn.classList.remove('active');
+        navMenu.classList.remove('active');
+        document.body.style.overflow = '';
+      });
+    });
+
+    // Image Upload and Preview Functionality
+    const imageUpload = document.getElementById('imageUpload');
+    const imagePreview = document.getElementById('imagePreview');
+    const captionBox = document.getElementById('captionBox');
+    const loader = document.getElementById('loader');
+
+    imageUpload.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          imagePreview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+        }
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // Reset all fields
+    function resetAll() {
+      imageUpload.value = '';
+      imagePreview.innerHTML = '<p>No image selected</p>';
+      captionBox.value = '';
+    }
+
+    // Generate Caption with loader
+    function generateCaption() {
+      const imageInput = document.getElementById('imageUpload');
+      
+      if (imageInput.files.length > 0) {
+        // Show loader with fade-in animation
+        loader.classList.add('active');
+        
+        // Hide loader after 3 seconds with fade-out animation
+        setTimeout(() => {
+          loader.classList.remove('active');
+          // Wait for fade-out to complete before making API call
+          setTimeout(() => {
+            uploadImage();
+          }, 500);
+        }, 3000);
+      } else {
+        alert('Please upload an image first.');
+      }
+    }
+
+    // Upload Image to Backend and Get Caption
+    function uploadImage() {
+      const imageInput = document.getElementById('imageUpload');
+      const formData = new FormData();
+      
+      if (imageInput.files.length > 0) {
+        formData.append('image', imageInput.files[0]);
+        fetch('http://127.0.0.1:5000/generate_caption', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+          captionBox.value = data.caption; // Display the generated caption
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          captionBox.value = "This is an example caption. Your image shows a beautiful landscape with mountains and a lake."; // Fallback caption for demo
+        });
+      } else {
+        alert('Please upload an image first.');
+      }
+    }
+    
+    // Remove overlay after animation completes
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const overlay = document.querySelector('.page-overlay');
+        if (overlay) {
+          overlay.style.display = 'none';
+        }
+      }, 1000);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HOME</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      overflow: hidden;
+      position: relative;
+      height: 100vh;
+      cursor: none;
+    }
+
+    .page-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: black;
+      z-index: 1000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 1s ease, visibility 1s ease;
+    }
+
+    .page-overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    /* From Uiverse.io by JaydipPrajapati1910 */ 
+.loader {
+  --path: #fff;
+  --dot: red;
+  --duration: 3s;
+  width: 44px;
+  height: 44px;
+  position: relative;
+}
+
+.loader:before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  position: absolute;
+  display: block;
+  background: var(--dot);
+  top: 37px;
+  left: 19px;
+  transform: translate(-18px, -18px);
+  animation: dotRect var(--duration) cubic-bezier(0.785, 0.135, 0.15, 0.86) infinite;
+}
+
+.loader svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.loader svg rect, .loader svg polygon, .loader svg circle {
+  fill: none;
+  stroke: var(--path);
+  stroke-width: 10px;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.loader svg polygon {
+  stroke-dasharray: 145 76 145 76;
+  stroke-dashoffset: 0;
+  animation: pathTriangle var(--duration) cubic-bezier(0.785, 0.135, 0.15, 0.86) infinite;
+}
+
+.loader svg rect {
+  stroke-dasharray: 192 64 192 64;
+  stroke-dashoffset: 0;
+  animation: pathRect 3s cubic-bezier(0.785, 0.135, 0.15, 0.86) infinite;
+}
+
+.loader svg circle {
+  stroke-dasharray: 150 50 150 50;
+  stroke-dashoffset: 75;
+  animation: pathCircle var(--duration) cubic-bezier(0.785, 0.135, 0.15, 0.86) infinite;
+}
+
+.loader.triangle {
+  width: 48px;
+}
+
+.loader.triangle:before {
+  left: 21px;
+  transform: translate(-10px, -18px);
+  animation: dotTriangle var(--duration) cubic-bezier(0.785, 0.135, 0.15, 0.86) infinite;
+}
+
+@keyframes pathTriangle {
+  33% {
+    stroke-dashoffset: 74;
+  }
+
+  66% {
+    stroke-dashoffset: 147;
+  }
+
+  100% {
+    stroke-dashoffset: 221;
+  }
+}
+
+@keyframes dotTriangle {
+  33% {
+    transform: translate(0, 0);
+  }
+
+  66% {
+    transform: translate(10px, -18px);
+  }
+
+  100% {
+    transform: translate(-10px, -18px);
+  }
+}
+
+@keyframes pathRect {
+  25% {
+    stroke-dashoffset: 64;
+  }
+
+  50% {
+    stroke-dashoffset: 128;
+  }
+
+  75% {
+    stroke-dashoffset: 192;
+  }
+
+  100% {
+    stroke-dashoffset: 256;
+  }
+}
+
+@keyframes dotRect {
+  25% {
+    transform: translate(0, 0);
+  }
+
+  50% {
+    transform: translate(18px, -18px);
+  }
+
+  75% {
+    transform: translate(0, -36px);
+  }
+
+  100% {
+    transform: translate(-18px, -18px);
+  }
+}
+
+@keyframes pathCircle {
+  25% {
+    stroke-dashoffset: 125;
+  }
+
+  50% {
+    stroke-dashoffset: 175;
+  }
+
+  75% {
+    stroke-dashoffset: 225;
+  }
+
+  100% {
+    stroke-dashoffset: 275;
+  }
+}
+
+.loader {
+  display: inline-block;
+  margin: 0 16px;
+}
+
+ 
+
+    nav {
+      position: fixed;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 40px);
+      max-width: 1000px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 20px;
+      background: rgba(0, 0, 0, 0.432);
+      box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+      backdrop-filter: blur(12px);
+      border-radius: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      z-index: 10;
+      color: rgb(255, 255, 255);
+    }
+
+    nav .logo {
+      font-size: 1.2rem;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 15px;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav ul li {
+      cursor: pointer;
+      transition: color 0.3s;
+      font-size: 0.9rem;
+    }
+
+    nav ul li a {
+      color: inherit;
+      text-decoration: none;
+      display: block;
+      padding: 5px 10px;
+      transition: all 0.3s ease;
+      border-radius: 8px;
+    }
+
+    nav ul li:hover a {
+      color: #4197c9;
+      background: rgba(164, 212, 255, 0.1);
+    }
+
+    .hamburger {
+      display: none;
+      cursor: pointer;
+      width: 24px;
+      height: 21px;
+      position: relative;
+      z-index: 11;
+      background: transparent;
+      border: none;
+    }
+
+    .hamburger span {
+      display: block;
+      position: absolute;
+      height: 3px;
+      width: 100%;
+      background: white;
+      border-radius: 3px;
+      opacity: 1;
+      left: 0;
+      transform: rotate(0deg);
+      transition: .25s ease-in-out;
+    }
+
+    .hamburger span:nth-child(1) { top: 0; }
+    .hamburger span:nth-child(2),
+    .hamburger span:nth-child(3) { top: 9px; }
+    .hamburger span:nth-child(4) { top: 18px; }
+
+    .hamburger.active span:nth-child(1) {
+      top: 9px;
+      width: 0%;
+      left: 50%;
+    }
+
+    .hamburger.active span:nth-child(2) {
+      transform: rotate(45deg);
+    }
+
+    .hamburger.active span:nth-child(3) {
+      transform: rotate(-45deg);
+    }
+
+    .hamburger.active span:nth-child(4) {
+      top: 9px;
+      width: 0%;
+      left: 50%;
+    }
+
+    spline-viewer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+    }
+
+    @media (max-width: 768px) {
+      .hamburger {
+        display: block;
+      }
+
+      nav ul {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 70%;
+        height: 100vh;
+        background: rgba(30, 30, 30, 0.95);
+        backdrop-filter: blur(10px);
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 30px;
+        transition: right 0.5s ease;
+        z-index: 10;
+        padding: 20px;
+        border-left: 1px solid rgba(255, 255, 255, 0.1);
+        margin: 0;
+      }
+
+      nav ul.active {
+        right: 0;
+      }
+
+      nav ul li {
+        width: 100%;
+        text-align: center;
+      }
+
+      nav ul li a {
+        padding: 15px;
+        font-size: 1.1rem;
+        width: 100%;
+      }
+
+      nav ul li:hover a {
+        background: rgba(60, 68, 75, 0.479);
+      }
+
+      nav .logo {
+        font-size: 1rem;
+      }
+    }
+
+    .try-caption-btn {
+      position: fixed;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      padding: 14px 28px;
+      font-size: 1rem;
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      cursor: pointer;
+      z-index: 5;
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
+
+    .try-caption-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      color: #a4d4ff;
+    }
+    /* Custom Cursor */
+    .cursor {
+      position: fixed;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: rgba(120, 134, 146, 0.5);
+      box-shadow: 0 0 10px rgba(120, 134, 146, 0.8);
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 9999;
+      mix-blend-mode: screen;
+      transition: transform 0.15s ease, background 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .cursor-inner {
+      position: fixed;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: white;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 9999;
+      transition: width 0.2s ease, height 0.2s ease;
+    }
+
+    .cursor.hover {
+      transform: translate(-50%, -50%) scale(1.5);
+      background: rgba(74, 144, 226, 0.5);
+      box-shadow: 0 0 15px rgba(74, 144, 226, 0.8);
+    }
+
+    .cursor.click {
+      transform: translate(-50%, -50%) scale(0.8);
+      background: rgba(231, 76, 60, 0.5);
+      box-shadow: 0 0 20px rgba(231, 76, 60, 0.8);
+    }
+
+    .cursor.hover .cursor-inner,
+    .cursor.click .cursor-inner {
+      width: 4px;
+      height: 4px;
+    }
+  </style>
+</head>
+<body>
+   <!-- Custom Cursor -->
+   <div class="cursor"></div>
+   <div class="cursor-inner"></div>
+  <!-- Loading Overlay with Modern Loader -->
+  <div class="page-overlay">
+   <!-- From Uiverse.io by JaydipPrajapati1910 --> 
+<div class="loader">
+  <svg viewBox="0 0 80 80">
+      <circle r="32" cy="40" cx="40" id="test"></circle>
+  </svg>
+</div>
+
+<div class="loader triangle">
+  <svg viewBox="0 0 86 80">
+      <polygon points="43 8 79 72 7 72"></polygon>
+  </svg>
+</div>
+
+<div class="loader">
+  <svg viewBox="0 0 80 80">
+      <rect height="64" width="64" y="8" x="8"></rect>
+  </svg>
+</div>
+  </div>
+
+  <!-- Navbar -->
+  <nav>
+    <div class="logo">𝙄𝙈𝘼𝙂𝙀 𝘾𝘼𝙋𝙏𝙄𝙊𝙉𝙄𝙉𝙂</div>
+    <button class="hamburger" id="hamburgerBtn">
+      <span></span><span></span><span></span><span></span>
+    </button>
+    <ul id="navMenu">
+      <li><a href="about.html">ABOUT US</a></li>
+      <li><a href="trycaption.html">TRY-CAPTION</a></li>
+      <li><a href="contact.html">CONTACT</a></li>
+    </ul>
+  </nav>
+
+  <!-- Spline Background -->
+  <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.85/build/spline-viewer.js"></script>
+  <spline-viewer loading-anim-type="spinner-small-dark" url="https://prod.spline.design/gnNgHGFIN8brHsgh/scene.splinecode"></spline-viewer>
+
+  <!-- Try Caption Button -->
+  <a href="trycaption.html" class="try-caption-btn">TRY-CAPTION</a>
+
+  <!-- JS: Menu Toggle + Overlay Hide -->
+  <script>
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const navMenu = document.getElementById('navMenu');
+    const overlay = document.querySelector('.page-overlay');
+
+    hamburgerBtn.addEventListener('click', () => {
+      hamburgerBtn.classList.toggle('active');
+      navMenu.classList.toggle('active');
+      document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
+    });
+
+    navMenu.querySelectorAll('li').forEach(item => {
+      item.addEventListener('click', () => {
+        hamburgerBtn.classList.remove('active');
+        navMenu.classList.remove('active');
+        document.body.style.overflow = '';
+      });
+    });
+
+    // Hide overlay when spline loads
+    const viewer = document.querySelector('spline-viewer');
+    viewer.addEventListener('load', () => {
+      overlay.classList.add('hidden');
+    });
+
+    // Fallback timeout
+    setTimeout(() => {
+      overlay.classList.add('hidden');
+    }, 2000);
+     // Custom cursor functionality
+     const cursor = document.querySelector('.cursor');
+    const cursorInner = document.querySelector('.cursor-inner');
+    const hoverElements = document.querySelectorAll('a, button, input, textarea, [hover-effect]');
+
+    document.addEventListener('mousemove', (e) => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+      cursorInner.style.left = e.clientX + 'px';
+      cursorInner.style.top = e.clientY + 'px';
+    });
+
+    hoverElements.forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursor.classList.add('hover');
+      });
+      el.addEventListener('mouseleave', () => {
+        cursor.classList.remove('hover');
+      });
+    });
+
+    document.addEventListener('mousedown', () => {
+      cursor.classList.add('click');
+    });
+
+    document.addEventListener('mouseup', () => {
+      cursor.classList.remove('click');
+    });
+
+    // Hide glow cursor on mobile
+    if (window.innerWidth <= 768) {
+      cursor.style.display = 'none';
+      cursorInner.style.display = 'none';
+    }
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth <= 768) {
+        cursor.style.display = 'none';
+        cursorInner.style.display = 'none';
+      } else {
+        cursor.style.display = 'block';
+        cursorInner.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>

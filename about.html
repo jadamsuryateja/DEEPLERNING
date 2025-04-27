@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About Us</title>
+  <style>
+    :root {
+      --primary-color: #a4d4ff;
+      --glow-color: #64b5ff;
+      --text-color: #ffffff;
+      --text-secondary: #dddddd;
+      --bg-gradient: linear-gradient(to right, #000000, #000000);
+      --card-bg: rgba(255, 255, 255, 0.08);
+      --card-border: rgba(255, 255, 255, 0.15);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-color);
+      line-height: 1.6;
+      opacity: 0;
+      animation: fadeIn 0.5s ease-out forwards;
+      animation-delay: 1s; /* Wait for loader to finish */
+      position: relative;
+      overflow-x: hidden;
+      cursor:none;
+    }
+
+    /* Ambient glow effect for background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 30%;
+      left: -10%;
+      width: 40%;
+      height: 40%;
+      background: radial-gradient(circle, rgba(100, 181, 255, 0.12) 0%, rgba(100, 181, 255, 0) 70%);
+      z-index: -1;
+      pointer-events: none;
+      animation: ambientGlow 20s infinite alternate ease-in-out;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      bottom: 10%;
+      right: -15%;
+      width: 50%;
+      height: 50%;
+      background: radial-gradient(circle, rgba(100, 181, 255, 0.08) 0%, rgba(100, 181, 255, 0) 70%);
+      z-index: -1;
+      pointer-events: none;
+      animation: ambientGlow 15s infinite alternate-reverse ease-in-out;
+    }
+
+    @keyframes ambientGlow {
+      0% {
+        transform: translateX(0) translateY(0) scale(1);
+        opacity: 0.5;
+      }
+      100% {
+        transform: translateX(5%) translateY(5%) scale(1.2);
+        opacity: 0.8;
+      }
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    /* Enhanced Loader styles */
+    #loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg-gradient);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      opacity: 1;
+      transition: opacity 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+    }
+
+    .spinner {
+      width: 60px;
+      height: 60px;
+      border: 6px solid rgba(255, 255, 255, 0.1);
+      border-top: 6px solid var(--primary-color);
+      border-radius: 50%;
+      animation: spin 1.2s cubic-bezier(0.5, 0.1, 0.4, 0.9) infinite;
+      margin-bottom: 20px;
+      box-shadow: 0 0 15px var(--glow-color);
+    }
+
+    .loader-text {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      margin-top: 20px;
+      opacity: 0.8;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(720deg); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.6; text-shadow: 0 0 5px transparent; }
+      50% { opacity: 1; text-shadow: 0 0 10px var(--glow-color); }
+    }
+
+    /* Rest of your existing styles remain the same */
+    nav {
+      position: fixed;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 40px);
+      max-width: 1000px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 20px;
+      background: rgba(0, 0, 0, 0.541);
+      box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37), 0 0 15px rgba(100, 181, 255, 0.3);
+      backdrop-filter: blur(12px);
+      border-radius: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      z-index: 10;
+      color: var(--text-color);
+      opacity: 0;
+      animation: slideDownFadeIn 0.8s ease-out forwards;
+      animation-delay: 1.2s;
+    }
+
+    @keyframes slideDownFadeIn {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+    }
+
+    nav .logo {
+      font-size: 1.2rem;
+      font-weight: bold;
+      white-space: nowrap;
+      text-shadow: 0 0 8px var(--glow-color);
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 15px;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav ul li {
+      cursor: pointer;
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+
+    nav ul li a {
+      color: inherit;
+      text-decoration: none;
+      padding: 5px 10px;
+      border-radius: 8px;
+      transition: 0.3s;
+    }
+
+    nav ul li:hover a {
+      color: var(--primary-color);
+      background: rgba(255, 255, 255, 0.1);
+      text-shadow: 0 0 8px var(--glow-color);
+      box-shadow: 0 0 10px rgba(100, 181, 255, 0.3);
+    }
+
+    .menu-toggle {
+      display: none;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 30px;
+      height: 21px;
+      cursor: pointer;
+      z-index: 11;
+    }
+
+    .menu-toggle span {
+      display: block;
+      height: 3px;
+      width: 100%;
+      background-color: white;
+      border-radius: 3px;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 5px var(--glow-color);
+    }
+
+    @media (max-width: 768px) {
+      .menu-toggle {
+        display: flex;
+      }
+
+      nav ul {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 70%;
+        height: 100vh;
+        background: rgba(30, 30, 30, 0.95);
+        backdrop-filter: blur(10px);
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 30px;
+        transition: right 0.5s ease;
+        z-index: 10;
+        padding: 20px;
+        border-left: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      nav ul.active {
+        right: 0;
+      }
+
+      nav ul li {
+        width: 100%;
+        text-align: center;
+      }
+
+      nav ul li a {
+        display: block;
+        padding: 15px;
+        font-size: 1.1rem;
+      }
+
+      .menu-toggle.active span:nth-child(1) {
+        transform: translateY(9px) rotate(45deg);
+      }
+
+      .menu-toggle.active span:nth-child(2) {
+        opacity: 0;
+      }
+
+      .menu-toggle.active span:nth-child(3) {
+        transform: translateY(-9px) rotate(-45deg);
+      }
+    }
+
+    .container {
+      padding: 120px 20px 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 40px;
+      line-height: 1.2;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.8s ease-out forwards;
+      animation-delay: 1.4s;
+      text-shadow: 0 0 15px var(--glow-color);
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .cards {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 300px;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.8s ease-out forwards;
+    }
+
+    .card:nth-child(1) { animation-delay: 1.5s; }
+    .card:nth-child(2) { animation-delay: 1.6s; }
+    .card:nth-child(3) { animation-delay: 1.7s; }
+
+    .card:hover {
+      transform: scale(1.05) translateY(-5px);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3), 0 0 20px rgba(100, 181, 255, 0.3);
+    }
+
+    .card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      transition: filter 0.3s ease;
+    }
+
+    .card:hover img {
+      filter: brightness(1.1);
+    }
+
+    .card-content {
+      padding: 20px;
+    }
+
+    .card-content h3 {
+      margin-top: 0;
+      font-size: 1.3rem;
+      margin-bottom: 10px;
+      color: var(--primary-color);
+      transition: text-shadow 0.3s ease;
+    }
+
+    .card:hover .card-content h3 {
+      text-shadow: 0 0 10px var(--glow-color);
+    }
+
+    .card-content p {
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: var(--text-secondary);
+      margin-bottom: 0;
+    }
+
+    .college-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      width: 100%;
+      padding: 30px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      margin-top: 40px;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.8s ease-out forwards;
+      animation-delay: 1.8s;
+      transition: box-shadow 0.3s ease;
+    }
+
+    .college-card:hover {
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3), 0 0 20px rgba(100, 181, 255, 0.3);
+    }
+
+    .college-card img {
+      width: 100%;
+      height: auto;
+      max-height: 300px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      transition: filter 0.3s ease;
+    }
+
+    .college-card:hover img {
+      filter: brightness(1.1);
+    }
+
+    .college-card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+      color: var(--primary-color);
+      transition: text-shadow 0.3s ease;
+    }
+
+    .college-card:hover h3 {
+      text-shadow: 0 0 10px var(--glow-color);
+    }
+
+    .college-card p {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: var(--text-secondary);
+    }
+
+    .square-cards-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 40px;
+    }
+
+    .square-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 400px;
+      min-height: 450px;
+      padding: 30px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.8s ease-out forwards;
+    }
+
+    .square-card:nth-child(1) { animation-delay: 1.9s; }
+    .square-card:nth-child(2) { animation-delay: 2.0s; }
+
+    .square-card:hover {
+      transform: scale(1.05) translateY(-5px);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3), 0 0 20px rgba(100, 181, 255, 0.3);
+    }
+
+    .square-card img {
+      width: 80%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      transition: filter 0.3s ease;
+    }
+
+    .square-card:hover img {
+      filter: brightness(1.1);
+    }
+
+    .square-card h3 {
+      font-size: 1.4rem;
+      color: var(--primary-color);
+      margin-bottom: 10px;
+      transition: text-shadow 0.3s ease;
+    }
+
+    .square-card:hover h3 {
+      text-shadow: 0 0 10px var(--glow-color);
+    }
+
+    .square-card p {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      text-align: center;
+    }
+
+    /* Glow animation for cards */
+    @keyframes borderGlow {
+      0%, 100% {
+        border-color: rgba(255, 255, 255, 0.15);
+      }
+      50% {
+        border-color: rgba(164, 212, 255, 0.4);
+      }
+    }
+
+    .card, .college-card, .square-card {
+      position: relative;
+    }
+
+    .card::before, .college-card::before, .square-card::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, transparent, var(--glow-color), transparent);
+      border-radius: 22px;
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .card:hover::before, .college-card:hover::before, .square-card:hover::before {
+      opacity: 0.5;
+      animation: borderGlow 2s linear infinite;
+    }
+
+    @media (max-width: 768px) {
+      nav {
+        top: 0;
+        border-radius: 0;
+        width: 100%;
+        padding: 15px 20px;
+      }
+
+      .container {
+        padding-top: 100px;
+      }
+
+      h1 {
+        font-size: 2rem;
+        margin-bottom: 30px;
+      }
+
+      .card {
+        max-width: 100%;
+      }
+
+      .college-card {
+        padding: 20px;
+      }
+
+      .college-card h3 {
+        font-size: 1.3rem;
+      }
+
+      .square-card {
+        min-height: auto;
+        padding: 20px;
+      }
+
+      .square-card img {
+        width: 100%;
+        height: auto;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 80px 15px 30px;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      .card-content h3, 
+      .square-card h3 {
+        font-size: 1.2rem;
+      }
+
+      .card-content p,
+      .square-card p,
+      .college-card p {
+        font-size: 0.9rem;
+      }
+
+      .college-card {
+        padding: 15px;
+      }
+    }
+
+    /* Hide preload container visually */
+    #image-preloader {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      opacity: 0;
+      z-index: -1;
+    }
+
+    /* Improved loading indicator styles */
+    .load-progress {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 14px;
+      color: var(--primary-color);
+      text-shadow: 0 0 8px var(--glow-color);
+    }
+/* Custom Cursor */
+.cursor {
+      position: fixed;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: rgba(120, 134, 146, 0.5);
+      box-shadow: 0 0 10px rgba(120, 134, 146, 0.8);
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 9999;
+      mix-blend-mode: screen;
+      transition: transform 0.15s ease, background 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .cursor-inner {
+      position: fixed;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: white;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 9999;
+      transition: width 0.2s ease, height 0.2s ease;
+    }
+
+    .cursor.hover {
+      transform: translate(-50%, -50%) scale(1.5);
+      background: rgba(74, 144, 226, 0.5);
+      box-shadow: 0 0 15px rgba(74, 144, 226, 0.8);
+    }
+
+    .cursor.click {
+      transform: translate(-50%, -50%) scale(0.8);
+      background: rgba(231, 76, 60, 0.5);
+      box-shadow: 0 0 20px rgba(231, 76, 60, 0.8);
+    }
+
+    .cursor.hover .cursor-inner,
+    .cursor.click .cursor-inner {
+      width: 4px;
+      height: 4px;
+    }
+  
+  </style>
+</head>
+<body>
+
+ <!-- Custom Cursor -->
+ <div class="cursor"></div>
+ <div class="cursor-inner"></div>
+  <!-- Image Preloader (Hidden) -->
+  <div id="image-preloader"></div>
+
+  <!-- Enhanced Loader -->
+  <div id="loader">
+    <div class="spinner"></div>
+    <div class="loader-text">Loading images...</div>
+    <div class="load-progress" id="load-progress">0%</div>
+  </div>
+
+  <!-- Navbar -->
+  <nav>
+    <div class="logo">𝙄𝙈𝘼𝙂𝙀 𝘾𝘼𝙋𝙏𝙄𝙊𝙉𝙄𝙉𝙂</div>
+    <div class="menu-toggle" id="mobile-menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <ul id="nav-menu">
+      <li><a href="home.html">HOME</a></li>
+      <li><a href="trycaption.html">TRY-CAPTION</a></li>
+      <li><a href="contact.html">CONTACT</a></li>
+    </ul>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container">
+    <h1>Meet the Team</h1>
+    <div class="cards">
+      <div class="card">
+        <img src="01 (01).jpg" alt="Team Member 1">
+        <div class="card-content">
+          <h3>SK.SAJAHAN</h3>
+          <p>TEAM LEADER</p>
+        </div>
+      </div>
+      <div class="card">
+        <img src="01 (02).jpg" alt="Team Member 2">
+        <div class="card-content">
+          <h3>J.SURYA TEJA</h3>
+          <p>TEAM MEMBER</p>
+        </div>
+      </div>
+      <div class="card">
+        <img src="01 (1).jpg" alt="Team Member 3">
+        <div class="card-content">
+          <h3>N.V.C.SUDHREER</h3>
+          <p>TEAM MEMBER</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="college-card">
+      <img src="coll.png" alt="Narasaraopeta Engineering College">
+      <h3>About Narasaraopeta Engineering College</h3>
+      <p>Narasaraopeta Engineering College (NEC) is one of the premier institutions located in Narasaraopeta, Andhra Pradesh. With a legacy of excellence in technical education, NEC is committed to nurturing students into highly skilled professionals. The college provides a wide range of undergraduate and postgraduate programs in engineering, ensuring comprehensive learning experiences for students to excel in their careers.</p>
+    </div>
+
+    <div class="square-cards-container">
+      <div class="square-card">
+        <img src="dl.png" alt="Project Image">
+        <h3>About the Project</h3>
+        <p>This project aims to build an image captioning system using deep learning techniques. The goal is to generate accurate captions for uploaded images using trained models.</p>
+      </div>
+      <div class="square-card">
+        <img src="set.png" alt="Requirements Image">
+        <h3>Project Requirements</h3>
+        <p>The project requires a deep learning model, pre-trained dataset, and a web interface. Technologies used include Python, Flask, TensorFlow, and HTML/CSS for frontend.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Image preloading functionality
+    const imagesToPreload = [
+      '01 (1).jpg',
+      '01 (1).png',
+      '01 (2).png',
+      'coll.png'
+    ];
+    
+    let loadedCount = 0;
+    const totalImages = imagesToPreload.length;
+    const preloader = document.getElementById('image-preloader');
+    const progressElement = document.getElementById('load-progress');
+    
+    // Function to update loading progress
+    function updateProgress() {
+      loadedCount++;
+      const percentage = Math.round((loadedCount / totalImages) * 100);
+      progressElement.textContent = `${percentage}%`;
+      
+      // If all images are loaded, hide the loader
+      if (loadedCount >= totalImages) {
+        hideLoader();
+      }
+    }
+    
+    // Preload all images
+    imagesToPreload.forEach(src => {
+      const img = new Image();
+      img.src = src;
+      preloader.appendChild(img);
+      
+      img.onload = function() {
+        updateProgress();
+      };
+      
+      img.onerror = function() {
+        // Still count error images as "loaded" to avoid hanging
+        console.error(`Failed to load image: ${src}`);
+        updateProgress();
+      };
+    });
+    
+    // Function to hide loader
+    function hideLoader() {
+      // First hide the spinner and text
+      const spinner = document.querySelector('.spinner');
+      const loaderText = document.querySelector('.loader-text');
+      const progressElement = document.querySelector('.load-progress');
+      
+      spinner.style.opacity = '0';
+      loaderText.style.opacity = '0';
+      progressElement.style.opacity = '0';
+      
+      // Then hide the entire loader with delay
+      setTimeout(() => {
+        const loader = document.getElementById('loader');
+        loader.style.opacity = '0';
+        
+        // Remove loader from DOM after transition completes
+        setTimeout(() => {
+          loader.style.display = 'none';
+        }, 800); // Match the CSS transition duration
+      }, 500); // Delay between spinner fade and loader fade
+    }
+
+    // Fallback in case images take too long to load
+    setTimeout(() => {
+      const loader = document.getElementById('loader');
+      if (loader.style.opacity !== '0') {
+        console.warn('Loader timeout triggered. Some images may not have finished loading.');
+        hideLoader();
+      }
+    }, 8000); // Maximum wait time of 8 seconds
+
+    // Mobile menu toggle functionality
+    const mobileMenu = document.getElementById('mobile-menu');
+    const navMenu = document.getElementById('nav-menu');
+    
+    mobileMenu.addEventListener('click', function() {
+      mobileMenu.classList.toggle('active');
+      navMenu.classList.toggle('active');
+      document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
+    });
+
+    const navLinks = document.querySelectorAll('#nav-menu li a');
+    navLinks.forEach(link => {
+      link.addEventListener('click', function() {
+        mobileMenu.classList.remove('active');
+        navMenu.classList.remove('active');
+        document.body.style.overflow = '';
+      });
+    });
+
+     // Custom cursor functionality
+     const cursor = document.querySelector('.cursor');
+    const cursorInner = document.querySelector('.cursor-inner');
+    const hoverElements = document.querySelectorAll('a, button, input, textarea, [hover-effect]');
+
+    document.addEventListener('mousemove', (e) => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+      cursorInner.style.left = e.clientX + 'px';
+      cursorInner.style.top = e.clientY + 'px';
+    });
+
+    hoverElements.forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursor.classList.add('hover');
+      });
+      el.addEventListener('mouseleave', () => {
+        cursor.classList.remove('hover');
+      });
+    });
+
+    document.addEventListener('mousedown', () => {
+      cursor.classList.add('click');
+    });
+
+    document.addEventListener('mouseup', () => {
+      cursor.classList.remove('click');
+    });
+
+    // Hide glow cursor on mobile
+    if (window.innerWidth <= 768) {
+      cursor.style.display = 'none';
+      cursorInner.style.display = 'none';
+    }
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth <= 768) {
+        cursor.style.display = 'none';
+        cursorInner.style.display = 'none';
+      } else {
+        cursor.style.display = 'block';
+        cursorInner.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>

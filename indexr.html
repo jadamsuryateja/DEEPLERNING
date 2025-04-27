@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up</title>
+  <style>
+    /* ---- FULL CSS ---- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: hsla(0,1%,0%,1);
+      background-image:
+        radial-gradient(at 0% 100%, hsla(18,0%,28%,1) 0px, transparent 50%),
+        radial-gradient(at 94% 97%, hsla(240,5%,34%,1) 0px, transparent 50%),
+        radial-gradient(at 0% 0%, hsla(335,0%,34%,1) 0px, transparent 50%);
+      background-size: cover;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 450px;
+      padding: 2.5rem;
+      margin: 1rem;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+      color: white;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 1.8rem;
+      font-size: 2rem;
+    }
+
+    .input-group {
+      margin-bottom: 1.2rem;
+      position: relative;
+    }
+
+    input {
+      width: 100%;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 8px;
+      outline: none;
+      color: white;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    input:focus {
+      border-color: #a4d4ff;
+      box-shadow: 0 0 10px rgba(164, 212, 255, 0.5);
+    }
+
+    label {
+      position: absolute;
+      left: 1rem;
+      top: 1rem;
+      color: rgba(255, 255, 255, 0.7);
+      pointer-events: none;
+      transition: all 0.3s ease;
+    }
+
+    input:focus + label,
+    input:not(:placeholder-shown) + label {
+      top: -0.6rem;
+      left: 0.8rem;
+      font-size: 0.8rem;
+      background: rgba(31, 38, 135, 0.7);
+      padding: 0 0.3rem;
+      border-radius: 4px;
+    }
+
+    button {
+      width: 100%;
+      padding: 1rem;
+      background: rgba(164, 212, 255, 0.7);
+      border: none;
+      border-radius: 8px;
+      color: #1a1a2e;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 0.8rem;
+    }
+
+    button:hover {
+      background: rgba(164, 212, 255, 0.9);
+      transform: translateY(-2px);
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 1.2rem;
+      font-size: 0.9rem;
+    }
+
+    .footer a {
+      color: #a4d4ff;
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 1.8rem;
+      }
+      
+      h2 {
+        font-size: 1.7rem;
+        margin-bottom: 1.5rem;
+      }
+      
+      input {
+        padding: 0.9rem;
+      }
+      
+      button {
+        padding: 0.9rem;
+      }
+      
+      .input-group {
+        margin-bottom: 1rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h2>Register</h2>
+    <form id="registerForm">
+      <div class="input-group">
+        <input type="text" id="reg-username" placeholder=" " required>
+        <label for="reg-username">Username</label>
+      </div>
+      <div class="input-group">
+        <input type="email" id="reg-email" placeholder=" " required>
+        <label for="reg-email">Email</label>
+      </div>
+      <div class="input-group">
+        <input type="password" id="reg-password" placeholder=" " required>
+        <label for="reg-password">Password</label>
+      </div>
+      <div class="input-group">
+        <input type="password" id="reg-confirm-password" placeholder=" " required>
+        <label for="reg-confirm-password">Confirm Password</label>
+      </div>
+      <button type="submit">Register</button>
+      <div class="footer">
+        <p>Already have an account? <a href="index.html">Login</a></p>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const username = document.getElementById('reg-username').value.trim();
+      const email = document.getElementById('reg-email').value.trim();
+      const password = document.getElementById('reg-password').value;
+      const confirmPassword = document.getElementById('reg-confirm-password').value;
+
+      if (password !== confirmPassword) {
+        alert('Passwords do not match.');
+        return;
+      }
+
+      let users = JSON.parse(localStorage.getItem('users')) || [];
+
+      const userExists = users.some(user => user.username === username);
+
+      if (userExists) {
+        alert('Username already exists. Choose another one.');
+        return;
+      }
+
+      users.push({ username, email, password });
+
+      localStorage.setItem('users', JSON.stringify(users));
+
+      alert('Registration successful! Now login.');
+
+      window.location.href = 'index.html';
+    });
+  </script>
+</body>
+</html>
