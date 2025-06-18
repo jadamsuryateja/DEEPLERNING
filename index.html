@@ -155,7 +155,7 @@
     </form>
   </div>
 
- <script>
+<script>
   document.getElementById('loginForm').addEventListener('submit', function(e) {
     e.preventDefault();
 
@@ -168,22 +168,21 @@
 
     if (user) {
       alert('Login successful!');
-      
-      // Open new tab
-      const newTab = window.open('home.html', '_blank');
-      
-      // Close current tab
-      window.close();
 
-      // If browser blocks window.close (likely), redirect to about:blank as a fallback
+      // Open home.html in a new tab
+      const newTab = window.open('home.html', '_blank');
+
+      // Optional: Redirect the current tab to a blank page or block interaction
+      document.body.innerHTML = '<h1 style="color:white; text-align:center; margin-top:20%;">Redirecting...</h1>';
       setTimeout(() => {
         window.location.href = 'about:blank';
-      }, 500);
+      }, 1000);
     } else {
       alert('Invalid username or password.');
     }
   });
 </script>
+
 
 </body>
 </html>
