@@ -155,24 +155,35 @@
     </form>
   </div>
 
-  <script>
-    document.getElementById('loginForm').addEventListener('submit', function(e) {
-      e.preventDefault();
+ <script>
+  document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
 
-      const username = document.getElementById('login-username').value.trim();
-      const password = document.getElementById('login-password').value;
+    const username = document.getElementById('login-username').value.trim();
+    const password = document.getElementById('login-password').value;
 
-      const users = JSON.parse(localStorage.getItem('users')) || [];
+    const users = JSON.parse(localStorage.getItem('users')) || [];
 
-      const user = users.find(u => u.username === username && u.password === password);
+    const user = users.find(u => u.username === username && u.password === password);
 
-      if (user) {
-        alert('Login successful!');
-        window.location.href = 'home.html'; // After login page
-      } else {
-        alert('Invalid username or password.');
-      }
-    });
-  </script>
+    if (user) {
+      alert('Login successful!');
+      
+      // Open new tab
+      const newTab = window.open('home.html', '_blank');
+      
+      // Close current tab
+      window.close();
+
+      // If browser blocks window.close (likely), redirect to about:blank as a fallback
+      setTimeout(() => {
+        window.location.href = 'about:blank';
+      }, 500);
+    } else {
+      alert('Invalid username or password.');
+    }
+  });
+</script>
+
 </body>
 </html>
