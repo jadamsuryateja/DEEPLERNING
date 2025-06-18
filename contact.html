@@ -750,7 +750,7 @@
       mix-blend-mode: screen;
       transition: transform 0.15s ease, background 0.2s ease, box-shadow 0.2s ease;
     }
-
+    
     .cursor-inner {
       position: fixed;
       width: 6px;
@@ -762,23 +762,29 @@
       z-index: 9999;
       transition: width 0.2s ease, height 0.2s ease;
     }
-
+    
+    /* Cursor states */
     .cursor.hover {
       transform: translate(-50%, -50%) scale(1.5);
       background: rgba(74, 144, 226, 0.5);
       box-shadow: 0 0 15px rgba(74, 144, 226, 0.8);
     }
-
+    
     .cursor.click {
       transform: translate(-50%, -50%) scale(0.8);
       background: rgba(231, 76, 60, 0.5);
       box-shadow: 0 0 20px rgba(231, 76, 60, 0.8);
     }
-
+    
     .cursor.hover .cursor-inner,
     .cursor.click .cursor-inner {
       width: 4px;
       height: 4px;
+    }
+    
+    /* Make sure cursor doesn't interfere with text selection */
+    * {
+      cursor: none !important;
     }
     /* Responsive Adjustments */
     @media (max-width: 768px) {
