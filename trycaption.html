@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TRY-CAP</title>
   <style>
-    /* Custom Cursor */
+   /* Custom Cursor */
     .cursor {
       position: fixed;
       width: 20px;
@@ -590,8 +590,7 @@
         blinkCursor 0.5s step-end infinite alternate;
       margin-top: 1.5em;
       text-shadow: 0 0 10px rgba(0, 255, 0, 0.7);
-    }
-  </style>
+    }  </style>
 </head>
 <body>
   <!-- Custom Cursor -->
@@ -605,10 +604,7 @@
   <nav>
     <div class="logo">𝙄𝙈𝘼𝙂𝙀 𝘾𝘼𝙋𝙏𝙄𝙊𝙉𝙄𝙉𝙂</div>
     <button class="hamburger" id="hamburgerBtn">
-      <span></span>
-      <span></span>
-      <span></span>
-      <span></span>
+      <span></span><span></span><span></span><span></span>
     </button>
     <ul id="navMenu">
       <li><a href="home.html">HOME</a></li>
@@ -634,16 +630,14 @@
 
   <!-- Page Content -->
   <div class="content">
-    <br>
-    <br>
-    <br>
+    <br><br><br>
     <div class="upload-container">
       <input type="file" id="imageUpload" accept="image/*" style="display: none;">
       <button class="upload-btn" onclick="document.getElementById('imageUpload').click()">Upload Image</button>
       <div class="image-preview" id="imagePreview">
         <p>No image selected</p>
       </div>
-      <textarea class="caption-box" id="captionBox" placeholder="Generated Caption will appear here..." readonly></textarea>
+      <textarea class="caption-box" id="captionBox" placeholder="Generated Captions will appear here..." readonly></textarea>
       <div class="button-container">
         <button class="upload-btn" onclick="generateCaption()">Generate Caption</button>
         <button class="reset-btn" onclick="resetAll()">Reset</button>
@@ -653,62 +647,25 @@
 
   <!-- Script -->
   <script>
-    // Custom cursor
+    // Cursor effect (unchanged)
     const cursor = document.querySelector('.cursor');
     const cursorInner = document.querySelector('.cursor-inner');
-    const hoverElements = document.querySelectorAll('a, button, input, textarea, [hover-effect]');
-    
     document.addEventListener('mousemove', (e) => {
       cursor.style.left = e.clientX + 'px';
       cursor.style.top = e.clientY + 'px';
       cursorInner.style.left = e.clientX + 'px';
       cursorInner.style.top = e.clientY + 'px';
     });
-    
-    // Hover effects
-    hoverElements.forEach(el => {
-      el.addEventListener('mouseenter', () => {
-        cursor.classList.add('hover');
-      });
-      el.addEventListener('mouseleave', () => {
-        cursor.classList.remove('hover');
-      });
-    });
-    
-    // Click effect
-    document.addEventListener('mousedown', () => {
-      cursor.classList.add('click');
-    });
-    
-    document.addEventListener('mouseup', () => {
-      cursor.classList.remove('click');
-    });
 
+    // Nav menu toggle
     const hamburgerBtn = document.getElementById('hamburgerBtn');
     const navMenu = document.getElementById('navMenu');
-
     hamburgerBtn.addEventListener('click', () => {
       hamburgerBtn.classList.toggle('active');
       navMenu.classList.toggle('active');
-      
-      // Prevent scrolling when menu is open
-      if(navMenu.classList.contains('active')) {
-        document.body.style.overflow = 'hidden';
-      } else {
-        document.body.style.overflow = '';
-      }
+      document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
     });
 
-    const navItems = navMenu.querySelectorAll('li');
-    navItems.forEach(item => {
-      item.addEventListener('click', () => {
-        hamburgerBtn.classList.remove('active');
-        navMenu.classList.remove('active');
-        document.body.style.overflow = '';
-      });
-    });
-
-    // Image Upload and Preview Functionality
     const imageUpload = document.getElementById('imageUpload');
     const imagePreview = document.getElementById('imagePreview');
     const captionBox = document.getElementById('captionBox');
@@ -725,25 +682,17 @@
       }
     });
 
-    // Reset all fields
     function resetAll() {
       imageUpload.value = '';
       imagePreview.innerHTML = '<p>No image selected</p>';
       captionBox.value = '';
     }
 
-    // Generate Caption with loader
     function generateCaption() {
-      const imageInput = document.getElementById('imageUpload');
-      
-      if (imageInput.files.length > 0) {
-        // Show loader with fade-in animation
+      if (imageUpload.files.length > 0) {
         loader.classList.add('active');
-        
-        // Hide loader after 3 seconds with fade-out animation
         setTimeout(() => {
           loader.classList.remove('active');
-          // Wait for fade-out to complete before making API call
           setTimeout(() => {
             uploadImage();
           }, 500);
@@ -753,31 +702,30 @@
       }
     }
 
-    // Upload Image to Backend and Get Caption
     function uploadImage() {
-      const imageInput = document.getElementById('imageUpload');
       const formData = new FormData();
-      
-      if (imageInput.files.length > 0) {
-        formData.append('image', imageInput.files[0]);
-        fetch('http://127.0.0.1:5000/generate_caption', {
-          method: 'POST',
-          body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-          captionBox.value = data.caption; // Display the generated caption
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          captionBox.value = "This is an example caption. Your image shows a beautiful landscape with mountains and a lake."; // Fallback caption for demo
-        });
-      } else {
-        alert('Please upload an image first.');
-      }
+      formData.append('image', imageUpload.files[0]);
+
+      fetch('http://127.0.0.1:5000/generate_caption', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (Array.isArray(data.captions)) {
+          captionBox.value = data.captions.map((cap, i) => `${i + 1}. ${cap}`).join('\n');
+        } else if (data.caption) {
+          captionBox.value = data.caption;
+        } else {
+          captionBox.value = "No caption received.";
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        captionBox.value = "Failed to generate caption. Please try again.";
+      });
     }
-    
-    // Remove overlay after animation completes
+
     window.addEventListener('load', () => {
       setTimeout(() => {
         const overlay = document.querySelector('.page-overlay');
