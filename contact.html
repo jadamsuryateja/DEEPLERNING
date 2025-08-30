@@ -12,38 +12,10 @@
       --text-color: #ffffff;
       --text-secondary: #dddddd;
       --bg-gradient: linear-gradient(to right, #000000, #000000);
-      --card-bg: rgba(0, 0, 0, 0.08);
+      --card-bg: rgba(255, 255, 255, 0.08);
       --card-border: rgba(255, 255, 255, 0.15);
     }
-/* Hide scrollbar but maintain scroll functionality */
-* {
-    /* For Chrome, Safari, and newer versions of Edge */
-    scrollbar-width: none; /* For Firefox */
-    -ms-overflow-style: none; /* For Internet Explorer and Edge */
-}
 
-/* For Chrome, Safari, and newer versions of Edge */
-*::-webkit-scrollbar {
-    display: none;
-}
-
-/* Ensure content still scrolls smoothly */
-html {
-    scroll-behavior: smooth;
-}
-
-/* Maintain overflow scroll functionality */
-body {
-    overflow-y: scroll;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-}
-
-/* Hide scrollbar in webkit browsers */
-body::-webkit-scrollbar {
-    width: 0;
-    height: 0;
-}
     /* Loading Overlay */
     .page-overlay {
       position: fixed;
@@ -200,22 +172,11 @@ body::-webkit-scrollbar {
       border-radius: 8px;
     }
 
-     nav ul li:hover a {
-      color: #fff;
-      background: rgba(74, 144, 226, 0.18);
-      box-shadow:
-        0 0 24px 8px rgba(74, 144, 226, 0.7),
-        0 0 40px 12px rgba(120, 134, 146, 0.25);
-      backdrop-filter: blur(8px);
-      text-shadow:
-        0 0 12px #4a90e2,
-        0 0 32px #a4d4ff;
-      transform: scale(1.08);
-      transition: 
-        background 0.3s,
-        box-shadow 0.3s,
-        text-shadow 0.3s,
-        transform 0.2s;
+    nav ul li:hover a {
+      color: var(--primary-color);
+      background: rgba(164, 212, 255, 0.1);
+      text-shadow: 0 0 8px var(--glow-color);
+      box-shadow: 0 0 10px rgba(100, 181, 255, 0.3);
     }
 
     /* Modern Hamburger Menu */
@@ -461,46 +422,13 @@ body::-webkit-scrollbar {
       word-break: break-word;
     }
 
-    .contact-info a {
-  display: inline;
-  color: #a4d4ff;
-  font-weight: 500;
-  font-size: 0.98rem;      /* Reduced font size */
-  text-decoration: none;
-  padding: 2px 6px;        /* Less padding */
-  border-radius: 6px;
-  background: rgba(100, 181, 255, 0.07);
-  box-shadow: none;
-  transition: 
-    background 0.2s,
-    color 0.2s,
-    box-shadow 0.2s,
-    transform 0.15s;
-  position: relative;
-  letter-spacing: 0.01em;
-  white-space: nowrap;     /* Prevent line break */
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-  vertical-align: middle;
-}
+    .contact-info:hover {
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+      transform: scale(1.02);
+      background: rgba(255, 255, 255, 0.05);
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+    }
 
-.contact-info a:hover,
-.contact-info a:focus {
-  background: rgba(100, 181, 255, 0.18);
-  color: #fff;
-  box-shadow: 0 0 18px 2px #64b5ff, 0 0 8px #a4d4ff;
-  text-shadow: 0 0 8px #a4d4ff;
-  transform: scale(1.07);
-  outline: none;
-}
-
-.contact-info a:active {
-  background: rgba(231, 76, 60, 0.18);
-  color: #fff;
-  box-shadow: 0 0 12px 2px #e74c3c;
-  transform: scale(0.97);
-}
     .social-icons {
       display: flex;
       justify-content: center;
@@ -930,10 +858,6 @@ body::-webkit-scrollbar {
         font-size: 8px;
       }
     }
-
-    body, html {
-  cursor: none !important;
-}
   </style>
 </head>
 <body>
@@ -967,28 +891,16 @@ body::-webkit-scrollbar {
     <div class="container">
       <div class="item">
         <h2 class="contact-title">CONTACT THROUGH EMAILS</h2>
-        <div class="contact-info">
-          <a href="mailto:jadamsuryateja@gmail.com">jadamsuryateja@gmail.com</a>
-        </div>
-        <div class="contact-info">
-          <a href="mailto:shaikshajahan8705@gmail.com">shaikshajahan8705@gmail.com</a>
-        </div>
-        <div class="contact-info">
-          <a href="mailto:sudheer764@gmail.com">sudheer764@gmail.com</a>
-        </div>
+        <div class="contact-info">jadamsuryateja123456@gmail.com</div>
+        <div class="contact-info">shaikshajahan8705@gmail.com</div>
+        <div class="contact-info">sudheer764@gmail.com</div>
       </div>
       
       <div class="item">
         <h2 class="contact-title">CONTACT PHONE NUMBERS</h2>
-        <div class="contact-info">
-          <a href="tel:+916300054355">+91 6300054355</a>
-        </div>
-        <div class="contact-info">
-          <a href="tel:+918247859004">+91 8247859004</a>
-        </div>
-        <div class="contact-info">
-          <a href="tel:+918464912097">+91 8464912097</a>
-        </div>
+        <div class="contact-info">+91 6300054355</div>
+        <div class="contact-info">+91 8247859004</div>
+        <div class="contact-info">+91 8464912097</div>
       </div>
       
       <div class="item">
@@ -1112,4 +1024,3 @@ body::-webkit-scrollbar {
   </script>
 </body>
 </html>
-
